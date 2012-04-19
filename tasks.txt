@@ -24,4 +24,5 @@ Only return dicts that contain ALL of the tags listed in *tags. If *tags is empt
 
 == Misc == 
 
-The above points are merely suggestions. If you have a better way of implementing this task, please contact me to discuss.
+- The above points are merely suggestions. If you have a better way of implementing this task, please contact me to discuss.
+- In order to develop this project, please clone this repository on github (https://github.com/adieyal/docrepo-backend) and develop the code there.
