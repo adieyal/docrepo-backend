@@ -1,0 +1,27 @@
+== General ==
+- Create a django project
+- Create a new docrepo application
+- Define a source model that stores a source name and backend identifier (multiple backends may be installed simultaneously). Make sure that the admin model is exposed in the admin suite.
+- Define the list url (e.g. http://docrepo/list/(?P<source_name>[\w_]+)/ which points to a view which delegates the request to the specified backend.
+- Define the list url with tags (e.g. http://docrepo/list/(?P<source_name>[\w_]+)/([\w_]+(?:\+[\w_]+)*) which points to a view which delegates the request to the specified backend.
+
+== Filesystem Backend ==
+- Create a filesystem backend module. The module should consist of a database model and a core class for interfacing with the filesystem (it might make sense to bundle these together into the same class). The database model should contain a one-to-one link to the source model. This model will comprise of at least the filesystem path to the source folder. Ensure that the admin model is exposed in the admin suite.
+
+The core class should contain at least the following public method:
+
+def list_resources(source, *tags)
+
+The method should return a list of dicts. One dict for each resource. Each dict should have the following keys: 
+name - resource name
+size - size in bytes
+type - the mimetype of the resource
+tags - a list of tags constructed from the directory names of each of the resource's parents. E.g. if the resource can be found here: source_root/a/b/c/d.txt then the resource should be tagged ['a', 'b', 'c'].
+
+Only return dicts that contain ALL of the tags listed in *tags. If *tags is empty then don't apply any filtering.
+
+- Create a backend resolver class. Given a backend identifier (as stored in the source table), return the core class for the backend. This resolver class will be used in the list view.
+
+== Misc == 
+
+The above points are merely suggestions. If you have a better way of implementing this task, please contact me to discuss.
