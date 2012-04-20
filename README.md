@@ -16,14 +16,14 @@ example
 As an example, let''s use a simple file system backend to describe how this works. Say we have the following file structure:
 
 - var
-  -- log
-  --- http
-    --- log1
-    --- log2
-  --- smtp
-    --- log3
-    --- jeff
-      --- log4
+    - log
+        - http
+            - log1
+            - log2
+        - smtp
+            - log3
+            - jeff
+                - log4
 
 using the file system backend we can define one or more 'source' paths. In our case, we are interested in providing access to the log directory. In the admin suite we create a new file system source that points to '/var/log' and we call it 'log_files'. It is now possible to access resources under the '/var/log' directory through the 'log_files' source. Note, a user is never exposed to the underlying path. 
 
