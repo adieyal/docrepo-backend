@@ -17,7 +17,6 @@ class FileSystem:
             # no such directory
             return {'error' : 'Source not found'}
 
-        #fullpath = os.path.join(source_path, relpath)
         fullpath = source_path + relpath
         if not os.path.exists(fullpath):
             return {'error' : 'Resource not found'}
@@ -73,7 +72,7 @@ class FileSystem:
         for resource in ret_list:
             fullpath = resource["fullpath"]
             del resource["fullpath"]
-            resource["relpath"] = fullpath.replace(source_path, "")
+            resource["resource_id"] = fullpath.replace(source_path, "")
         return ret_list
 
 def get_all_files(path, initial_list=None):
