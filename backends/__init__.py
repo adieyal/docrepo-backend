@@ -10,3 +10,6 @@ class Backend:
     def list_resources(self, source, *tags):
         return self._class.list_resources(source, *tags)
 
+    def get_resource(self, source, resource_id):
+        return self._class.get_resource(source, resource_id)
+
