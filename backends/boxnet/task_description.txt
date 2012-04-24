@@ -1,0 +1,64 @@
+Overview
+========
+Develop a box.net backend plugin for this project: https://github.com/adieyal/docrepo-backend
+
+Follow the same plugin format as was used for the filesystem plugin.
+
+Sample usage
+===========
+The plugin should have two functions
+
+a) list_resources - given a source (directory) as a parameter, it returns all the resources (files) that are found within that source along with other metadata such as resource size, filetype and tags. 
+
+using examples from the filesystem backend:
+
+Request
+http://localhost:8000/docrepo/list/docrepo/
+
+Response
+
+[{"name": "__init__.py", "resource_id": "/backends/__init__.py", "tags": ["backends"], "type": "py", "size": 442}, {"name": "__init__.pyc", "resource_id": "/backends/__init__.pyc", "tags": ["backends"], "type": "pyc", "size": 1162}, {"name": "constants.py", "resource_id": "/backends/constants.py", "tags": ["backends"], "type": "py", "size": 121}, {"name": "__init__.py", "resource_id": "/backends/filesystem/__init__.py", "tags": ["backends", "filesystem"], "type": "py", "size": 3774}, {"name": "admin.pyc", "resource_id": "/backends/filesystem/admin.pyc", "tags": ["backends", "filesystem"], "type": "pyc", "size": 310}, {"name": "__init__.pyc", "resource_id": "/backends/filesystem/__init__.pyc", "tags": ["backends", "filesystem"], "type": "pyc", "size": 2851}, {"name": ".__init__.py.swp", "resource_id": "/backends/filesystem/.__init__.py.swp", "tags": ["backends", "filesystem"], "type": "swp", "size": 16384}, {"name": "models.pyc", "resource_id": "/backends/filesystem/models.pyc", "tags": ["backends", "filesystem"], "type": "pyc", "size": 964}, {"name": "constants.py", "resource_id": "/backends/filesystem/constants.py", "tags": ["backends", "filesystem"], "type": "py", "size": 25}, {"name": "models.py", "resource_id": "/backends/filesystem/models.py", "tags": ["backends", "filesystem"], "type": "py", "size": 425}, {"name": "admin.py", "resource_id": "/backends/filesystem/admin.py", "tags": ["backends", "filesystem"], "type": "py", "size": 117}, {"name": "__init__.py", "resource_id": "/backends/filesystem/__init__.py", "tags": ["backends", "filesystem"], "type": "py", "size": 3774}, {"name": "admin.pyc", "resource_id": "/backends/filesystem/admin.pyc", "tags": ["backends", "filesystem"], "type": "pyc", "size": 310}, {"name": "__init__.pyc", "resource_id": "/backends/filesystem/__init__.pyc", "tags": ["backends", "filesystem"], "type": "pyc", "size": 2851}, {"name": ".__init__.py.swp", "resource_id": "/backends/filesystem/.__init__.py.swp", "tags": ["backends", "filesystem"], "type": "swp", "size": 16384}, {"name": "models.pyc", "resource_id": "/backends/filesystem/models.pyc", "tags": ["backends", "filesystem"], "type": "pyc", "size": 964}, {"name": "constants.py", "resource_id": "/backends/filesystem/constants.py", "tags": ["backends", "filesystem"], "type": "py", "size": 25}, {"name": "models.py", "resource_id": "/backends/filesystem/models.py", "tags": ["backends", "filesystem"], "type": "py", "size": 425}, {"name": "admin.py", "resource_id": "/backends/filesystem/admin.py", "tags": ["backends", "filesystem"], "type": "py", "size": 117}]
+
+An optional tags querystring parameter can be given which is used to filter the returned results. 
+
+e.g.
+
+Request
+http://localhost:8000/docrepo/list/docrepo/?tags=backends+filesystem
+
+Response
+[{"name": "__init__.py", "resource_id": "/backends/filesystem/__init__.py", "tags": ["backends", "filesystem"], "type": "py", "size": 3774}, {"name": "admin.pyc", "resource_id": "/backends/filesystem/admin.pyc", "tags": ["backends", "filesystem"], "type": "pyc", "size": 310}, {"name": "__init__.pyc", "resource_id": "/backends/filesystem/__init__.pyc", "tags": ["backends", "filesystem"], "type": "pyc", "size": 2851}, {"name": ".__init__.py.swp", "resource_id": "/backends/filesystem/.__init__.py.swp", "tags": ["backends", "filesystem"], "type": "swp", "size": 16384}, {"name": "models.pyc", "resource_id": "/backends/filesystem/models.pyc", "tags": ["backends", "filesystem"], "type": "pyc", "size": 964}, {"name": "constants.py", "resource_id": "/backends/filesystem/constants.py", "tags": ["backends", "filesystem"], "type": "py", "size": 25}, {"name": "models.py", "resource_id": "/backends/filesystem/models.py", "tags": ["backends", "filesystem"], "type": "py", "size": 425}, {"name": "admin.py", "resource_id": "/backends/filesystem/admin.py", "tags": ["backends", "filesystem"], "type": "py", "size": 117}]
+
+Notice that the return resources contain both tags
+
+It it also possible to request a resource, e.g.
+
+Request
+http://localhost:8000/docrepo/get/docrepo/?resource_id=/backends/__init__.py
+
+Response
+{"contents": "ZnJvbSBkamFuZ28uY29uZiBpbXBvcnQgc2V0dGluZ3MKCmNsYXNzIEJhY2tlbmQ6CiAgICAiIiIKICAgICAgICBCYWNrZW5kIGFic3RyYWN0aW9uIGNsYXNzIGZvciBkb2NyZXBvIGFwcGxpY2F0aW9uCiAgICAiIiIKICAgIGRlZiBfX2luaXRfXyhzZWxmLCBiYWNrZW5kX2lkKToKICAgICAgICAgICAgc2VsZi5fY2xhc3MgPSBldmFsKHNldHRpbmdzLkJBQ0tFTkRfSURfTUFQW2JhY2tlbmRfaWRdKQoKICAgIGRlZiBsaXN0X3Jlc291cmNlcyhzZWxmLCBzb3VyY2UsICp0YWdzKToKICAgICAgICByZXR1cm4gc2VsZi5fY2xhc3MubGlzdF9yZXNvdXJjZXMoc291cmNlLCAqdGFncykKCiAgICBkZWYgZ2V0X3Jlc291cmNlKHNlbGYsIHNvdXJjZSwgcmVzb3VyY2VfaWQpOgogICAgICAgIHJldHVybiBzZWxmLl9jbGFzcy5nZXRfcmVzb3VyY2Uoc291cmNlLCByZXNvdXJjZV9pZCkKCg=="}
+
+Notice that the contents of the file have been base64 encoded.
+
+Requirements for this project
+=============================
+
+1. Use the python boxnet-client api wrapper to access the box.net api (code.google.com/p/boxnet-client/)
+2. Develop a backend plugin, similar to the example filesystem plugin
+3. For the resource_ids, use box.net's internal ids
+4. Produce to versions of this plugin - one that uses actual box.net tags as tags and another which uses path components (similar to the filesystem plugin) as tags. This versions should be part of the same plugin but accessible using different source types
+5. Retain the coding style used in this project.
+6. Suggestions for refactoring the code-base are welcome. 
+7. Produce a short document detailing the steps required to set-up a box.net application
+
+Steps
+=====
+
+1. Clone https://github.com/adieyal/docrepo-backend
+2. Review existing codebase
+3. Create a free box.net account and populate it with a sample directory structure
+4. Develop the box.net plugin as per the discussion above. Ensure that it comes in two variants:
+    - path elements are defined as tags (same as the filesystem backend)
+    - box.net tags are defined as tags
+5. Document the process of hooking up to box.net.
