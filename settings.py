@@ -1,10 +1,5 @@
 # Django settings for docrepo_backend project.
-import os
-import sys
 
-PROJECT_ROOT = os.path.dirname(__file__)
-sys.path.insert(0, PROJECT_ROOT)
- 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -128,6 +123,17 @@ INSTALLED_APPS = (
     'docrepo',
     'backends.filesystem',
 )
+
+# Available Backends
+FILESYSTEM_BACKEND_ID = 'filesystem'
+
+BACKEND_IDS = (
+    (FILESYSTEM_BACKEND_ID, FILESYSTEM_BACKEND_ID),
+) 
+
+BACKEND_ID_MAP = {
+    FILESYSTEM_BACKEND_ID : 'filesystem.FileSystem',
+}
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
