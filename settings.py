@@ -122,18 +122,30 @@ INSTALLED_APPS = (
     
     'docrepo',
     'backends.filesystem',
+    'backends.boxnet',
+    'backends.boxnet_native_tags',
 )
 
 # Available Backends
 FILESYSTEM_BACKEND_ID = 'filesystem'
+BOXNET_BACKEND_ID = 'boxnet'
+BOXNET2_BACKEND_ID = 'boxnet-native-tags'
 
 BACKEND_IDS = (
     (FILESYSTEM_BACKEND_ID, FILESYSTEM_BACKEND_ID),
+    (BOXNET_BACKEND_ID, BOXNET_BACKEND_ID),
+    (BOXNET2_BACKEND_ID, BOXNET2_BACKEND_ID),
 ) 
 
 BACKEND_ID_MAP = {
     FILESYSTEM_BACKEND_ID : 'filesystem.FileSystem',
+    BOXNET_BACKEND_ID : 'boxnet.BoxnetWrapper',
+    BOXNET2_BACKEND_ID : 'boxnet_native_tags.BoxnetNativeTags',
 }
+
+#BoxNet Settings
+BOXNET_APIKEY = 'ev60vjscovjliishnaxrojrbets77e0o'
+BOXNET_AUTH_TOKEN = 'jhadf7320vefa16z59741dml0veegj9q'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

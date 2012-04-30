@@ -159,14 +159,16 @@ class BoxDotNet(object):
         self.__handlerCache={}
 
     @classmethod
-    def __fix_args(cls, **arg):
-        for key in arg.keys():
-            if isinstance(arg[key], list):
-                arg[key] = ','.join(arg[key])
+    def __fix_args(cls, arg):
+        items = []
+        for key, value in arg:
+            if isinstance(value, list):
+                for el in value:
+                    items.append((key + '[]', el))
+            else:
+                items.append((key, value))
 
-                value = arg[key]
-                arg[key + '[]'] = value
-                del arg[key]
+        return items
 
         return arg
 
@@ -182,12 +184,14 @@ class BoxDotNet(object):
     def login(self, api_key):
         # get ticket
         rsp = self.get_ticket (api_key=api_key)
+        print rsp.ticket[0].elementText
         ticket = rsp.ticket[0].elementText
         # open url
         url = "http://www.box.net/api/1.0/auth/%s" % ticket
-        os.system('%s "%s"' % (self.browser, url))
+        #os.system('%s "%s"' % (self.browser, url))
 
         # get token
+        print api_key
         rsp = self.get_auth_token(api_key=api_key, ticket=ticket)
 
         return rsp
@@ -198,10 +202,11 @@ class BoxDotNet(object):
         """
         if not self.__handlerCache.has_key(method):
             def handler(_self = self, _method = method, **arg):
-                arg = _self.__fix_args(**arg)
+                arg = arg.items()
+                arg = _self.__fix_args(arg)
 
                 url = _self.END_POINT
-                arg["action"] = _method
+                arg.append(("action", _method))
                 postData = urllib.urlencode(arg)
                 # print "--url---------------------------------------------"
                 # print url
