@@ -13,3 +13,6 @@ class Backend:
     def get_resource(self, source, resource_id):
         return self._class.get_resource(source, resource_id)
 
+    def get_resource_content(self, source, resource_id):
+        return self._class.get_resource_content(source, resource_id)
+

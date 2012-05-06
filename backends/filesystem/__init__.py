@@ -7,6 +7,27 @@ class FileSystem:
 
     @staticmethod
     def get_resource(source, relpath):
+        ret_data = FileSystem._get_resource(source, relpath)
+        if 'response' in ret_data.keys():
+            return {
+                'content' : base64.b64encode(ret_data['response'].read())
+            }
+        else:
+            return ret_data
+
+    @staticmethod
+    def get_resource_content(source, relpath):
+        ret_data = FileSystem._get_resource(source, relpath, "rb")
+        if 'response' in ret_data.keys():
+            return {
+                'content' : ret_data['response'],
+                'name' : relpath
+            }
+        else:
+            return ret_data
+
+    @staticmethod
+    def _get_resource(source, relpath, mode="r"):
         try:
             obj = SourcePath.objects.get(source=source)
         except SourcePath.DoesNotExist:
@@ -21,10 +42,8 @@ class FileSystem:
         if not os.path.exists(fullpath):
             return {'error' : 'Resource not found'}
 
-        f = open(fullpath)
-        return {
-            "contents" : base64.b64encode(f.read())
-        }
+        f = open(fullpath, mode)
+        return {'response' : f, 'file_name': os.path.basename(fullpath)}
         
     @staticmethod
     def list_resources(source, tags):

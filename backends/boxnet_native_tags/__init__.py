@@ -13,6 +13,10 @@ class BoxnetNativeTags:
         return BoxnetWrapper.get_resource(source, resource_id)
 
     @staticmethod
+    def get_resource_content(source, resource_id):
+        return BoxnetWrapper.get_resource_content(source, resource_id)
+
+    @staticmethod
     def list_resources(source, tags):
         default_args = {'api_key': settings.BOXNET_APIKEY, 
                        'auth_token': settings.BOXNET_AUTH_TOKEN}

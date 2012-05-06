@@ -13,6 +13,27 @@ BOXNET_API_BASE_URL = 'https://www.box.net/api/1.0/'
 class BoxnetWrapper:
     @staticmethod
     def get_resource(source, resource_id):
+        ret_data = BoxnetWrapper._get_resource(source, resource_id)
+        if 'response' in ret_data.keys():
+            return {
+                'contents' : base64.b64encode(ret_data['response'].read())
+            }
+        else:
+            return ret_data
+
+    @staticmethod
+    def get_resource_content(source, resource_id):
+        ret_data = BoxnetWrapper._get_resource(source, resource_id)
+        if 'response' in ret_data.keys():
+            return {
+                'content' : ret_data['response'].read(),
+                'name' : ret_data['resource_name']
+            }
+        else:
+            return ret_data
+    
+    @staticmethod
+    def _get_resource(source, resource_id):
         try:
             obj = BoxnetSource.objects.get(source=source)
         except BoxnetSource.DoesNotExist:
@@ -24,7 +45,8 @@ class BoxnetWrapper:
         data = { 'folder_id': obj.folder_id, 'params':['nozip',] }
         data.update(default_args)
         ret_data = boxnet.get_account_tree(**data)
-        if not search_file(ret_data.tree[0].folder[0], resource_id):
+        success, res_name = search_file(ret_data.tree[0].folder[0], resource_id)
+        if not success:
             return {'error' : 'Resource not found'}
 
         # the only way to get file contents - download
@@ -37,9 +59,11 @@ class BoxnetWrapper:
             return {'error' : 'Resource not found'}
         else:
             return {
-                'contents' : base64.b64encode(response.read())
+                'response' : response,
+                'resource_name' : res_name
             }
 
+            
     @staticmethod
     def list_resources(source, tags):
         default_args = {'api_key': settings.BOXNET_APIKEY, 
@@ -113,15 +137,16 @@ def search_file(folder_node, resource_id):
     try:
         for f in folder_node.files[0].file:
             if f['id'] == resource_id:
-                return True
+                return True, f['file_name']
     except:
         pass
 
     try:
         for fld in folder_node.folders[0].folder:
-            if search_file(fld, resource_id):
-                return True
+            success, name = search_file(fld, resource_id)
+            if success:
+                return success, name
     except:
         pass
         
-    return False
+    return False, ''
